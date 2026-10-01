@@ -1,0 +1,40 @@
+.comment-section{
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #fff;
+}
+.comment-item{
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  animation: fadeIn 0.3s ease;
+}
+.comment-avatar{
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+.comment-bubble{
+  background: #f0f2f5;
+  padding: 8px 12px;
+  border-radius: 18px;
+  max-width: 80%;
+}
+.comment-name{
+  font-size: 13px;
+  display: block;
+  text-transform: capitalize;
+}
+.comment-text{
+  font-size: 13px;
+  margin: 2px 0 0 0;
+  color: #050505;
+  line-height: 1.3;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
