@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import LeftSideBar from './components/LeftSideBar.jsx';
 import { getpost, getPhotos, getAlbums, getAlbumPhotos } from './api/index.js';
 import PostCard from './components/PostCard.jsx';
+import SinglePostPage from './pages/SinglePostPage';
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
@@ -66,14 +67,11 @@ function App() {
 
   return (
     <div className="flex min-h-screen bg-[#f0f2f5]">
-
-      {/* Mobile Topbar */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-[60px] bg-white border-b flex items-center justify-between px-4 z-[100]">
         <h3 className="font-bold text-lg">My App</h3>
         <button onClick={() => setShowSidebar(!showSidebar)} className="text-3xl">☰</button>
       </div>
 
-      {/* Sidebar */}
       <div className={`
         fixed left-0 bg-white border-r z-50 w-[280px] h-screen overflow-y-auto
         transition-transform duration-300
@@ -83,16 +81,15 @@ function App() {
         <LeftSideBar />
       </div>
 
-      {/* Dark Overlay for Mobile */}
       {showSidebar && <div onClick={() => setShowSidebar(false)} className="fixed inset-0 bg-black/40 z-40 md:hidden top-[60px]"></div>}
 
-      {/* Main Content */}
       <div className="flex-1 md:ml-[280px] mt-[60px] md:mt-0 p-2 md:p-6">
         <Routes>
           <Route path="/" element={<FeedPage posts={posts} />} />
           <Route path="/news-feed" element={<FeedPage posts={posts} />} />
           <Route path="/albums" element={<AlbumsPage />} />
           <Route path="/albums/:id" element={<SingleAlbumPage />} />
+          <Route path="/post/:id" element={<SinglePostPage posts={posts} />} />
         </Routes>
       </div>
     </div>
