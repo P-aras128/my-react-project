@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/food-api/:path*", "destination": "https://dailyfoodrecalls.com/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}  
