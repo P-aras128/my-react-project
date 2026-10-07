@@ -1,87 +1,52 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { getComments } from '../api/index.js';
 
-function PostCard({ post }) {
+export default function PostCard({ post }) {
   const [comments, setComments] = useState([]);
   const [showComments, setShowComments] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
-  const handleCommentClick = async () => {
-    if (showComments) {
-      setShowComments(false);
-      return;
+  const loadComments = async () => {
+    if (comments.length === 0) {
+      const data = await getComments(post.id);
+      setComments(data);
     }
-    setLoading(true);
-    const data = await getComments(post.id);
-    setComments(data);
-    setShowComments(true);
-    setLoading(false);
+    setShowComments(!showComments);
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-4 relative">
-      {/* Header */}
-      <div className="flex items-center justify-between p-3">
-        <div className="flex items-center gap-3">
-          <img src={`https://i.pravatar.cc/150?img=${post.id}`} className="w-10 h-10 rounded-full" />
-          <div>
-            <h4 className="font-semibold text-sm">test ✔️ <span className="font-normal">changed his profile picture</span></h4>
-            <p className="text-[11px] text-gray-500">1 w • 🌍</p>
-          </div>
-        </div>
-
-        {/* V ICON WITH DROPDOWN */}
-        <div className="relative">
-          <button
-            onClick={() => setShowMenu(!showMenu)}
-            className="w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded-full font-bold text-gray-600"
-          >
-            ⌄
-          </button>
-
-          {showMenu && (
-            <div className="absolute right-0 top-9 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1">
-              <button
-                onClick={() => navigate(`/post/${post.id}`)}
-                className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-100"
-              >
-                👁️ View Post
-              </button>
-              <button
-                onClick={() => navigate(`/post/${post.id}`)}
-                className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-100"
-              >
-                🔗 Open Single Page
-              </button>
-            </div>
-          )}
+    <div style={{background:'#fff', borderRadius:'8px', padding:'15px', marginBottom:'15px', boxShadow:'0 1px 2px rgba(0,0,0,0.1)'}}>
+      {/* User */}
+      <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'10px'}}>
+        <img src={`https://i.pravatar.cc/40?u=${post.id}`} style={{width:'40px', height:'40px', borderRadius:'50%'}} />
+        <div>
+          <h4 style={{margin:0, fontSize:'14px', fontWeight:'600'}}>User {post.userId}</h4>
+          <p style={{margin:0, fontSize:'12px', color:'#65676b'}}>Just now</p>
         </div>
       </div>
 
-      {/* Image */}
-      <img src={post.image} alt="post" className="w-full max-h-[500px] object-cover bg-gray-100" />
+      {/* Post Text */}
+      <h3 style={{fontSize:'15px', fontWeight:'600', margin:'0 0 5px 0'}}>{post.title}</h3>
+      <p style={{fontSize:'14px', color:'#050505', margin:'0 0 10px 0'}}>{post.body}</p>
 
-      {/* Like Comment Bar */}
-      <div className="flex justify-around border-t py-1">
-        <button className="flex-1 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded">👍 Like</button>
-        <button onClick={handleCommentClick} className="flex-1 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded">
-          {loading? 'Loading...' : '💬 Comment'}
-        </button>
-        <button className="flex-1 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded">↗️ Share</button>
+      {/* Post Image */}
+      {post.image && (
+        <img src={post.image} style={{width:'100%', borderRadius:'6px', maxHeight:'400px', objectFit:'cover'}} />
+      )}
+
+      {/* Actions */}
+      <div style={{display:'flex', justifyContent:'space-between', marginTop:'10px', borderTop:'1px solid #e4e6eb', paddingTop:'10px'}}>
+        <button style={{border:'none', background:'none', cursor:'pointer'}}>👍 Like</button>
+        <button onClick={loadComments} style={{border:'none', background:'none', cursor:'pointer'}}>💬 Comment ({comments.length || '...'})</button>
+        <button style={{border:'none', background:'none', cursor:'pointer'}}>↗️ Share</button>
       </div>
 
-      {/* Comments - ID left side */}
+      {/* Comments */}
       {showComments && (
-        <div className="bg-[#f0f2f5] p-3 space-y-2">
-          {comments.map((c) => (
-            <div key={c.id} className="flex gap-3 items-start bg-white p-2.5 rounded-lg shadow-sm">
-              <span className="w-6 h-6 bg-blue-100 text-blue-600 text-xs font-bold rounded-full flex items-center justify-center flex-shrink-0">
-                {c.id}
-              </span>
-              <p className="text-[13px] text-gray-700">{c.body}</p>
+        <div style={{marginTop:'10px', background:'#f0f2f5', padding:'10px', borderRadius:'8px'}}>
+          {comments.map(c => (
+            <div key={c.id} style={{marginBottom:'8px'}}>
+              <b style={{fontSize:'13px'}}>{c.email}: </b>
+              <span style={{fontSize:'13px'}}>{c.body}</span>
             </div>
           ))}
         </div>
@@ -89,5 +54,3 @@ function PostCard({ post }) {
     </div>
   );
 }
-
-export default PostCard;
